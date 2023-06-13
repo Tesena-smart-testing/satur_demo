@@ -3,7 +3,6 @@ Library  RequestsLibrary
 Library  ExcelRobot
 Library  SeleniumLibrary
 Library  JSONLibrary
-Library  XML  use_lxml=True 
 Library  jsonLibrary.py
 Suite Setup  Create Session  Invia  ${HOST}  disable_warnings=1
 #Suite Teardown  Save Excel
