@@ -1,9 +1,9 @@
 *** Settings ***
 Library  RequestsLibrary
 Library  ExcelRobot
-Library  SeleniumLibrary
 Library  JSONLibrary
 Library  jsonLibrary.py
+Library  String
 Suite Setup  Create Session  Invia  ${HOST}  disable_warnings=1
 #Suite Teardown  Save Excel
 
@@ -50,14 +50,15 @@ Call Invia API
 Get Hotel Id
     [Arguments]  ${ENDPOINT_HOTEL}
     [Documentation]  vyhleda ID hotelu z URL
-    [Teardown]  Close All Browsers
-    Open Browser  ${HOST}${ENDPOINT_HOTEL}  chrome
-    ${datafilter_str}=  SeleniumLibrary.Get Element Attribute   //div[@id="js-tour-term-picker-container"]  data-filter    
-    ${datafilter_json}=  JSONLibrary.Convert String To Json  ${datafilter_str}
-    ${hotelid}=  JSONLibrary.Get Value From Json  ${datafilter_json}  $.nl_hotel_id
-    log  ${datafilter_json}
-    ${hotelid}=  Set Variable  ${datafilter_json['nl_hotel_id']}    
-    [Return]  ${hotelid}
+    ${resp}=  GET On Session  Invia  ${ENDPOINT_HOTEL}
+    Log  ${resp.text}
+    ${line}=  Get Lines Containing String  ${resp.text}  ajax-get-hotel-detail-map
+    Log  ${line}
+    ${line}=  Remove String  ${line}  href="https://www.invia.sk/direct/tour_hotel/ajax-get-hotel-detail-map/nl_hotel_id/
+    ${line}=  Remove String  ${line}  /"
+    ${line}=  Strip String  ${line}  characters=${SPACE}
+    ${hotelID}=  Set Variable  ${line.strip()}
+    [Return]  ${hotelID}
     
 
 *** Test Cases ***
