@@ -63,7 +63,7 @@ Get Hotel Id
 
 *** Test Cases ***
 Get info
-    Open Excel   input.xlsx
+    Open Excel   input.xls
     ${hotel_id}=  Get Hotel Id  /hotel/egypt/sharm-el-sheikh/sunrise-montemare-resort-grand-select/
     ${resp_json}=  Call Invia API  start_from=10.06.2023  end_to=17.06.2023  hotel_id=111337    
     ${pocet_radku}    Get Row Count  Sheet1
