@@ -63,16 +63,19 @@ Get Hotel Id
 
 *** Test Cases ***
 Get info
-    Open Excel   input.xls
+    Open Excel   input.xlsx
     ${hotel_id}=  Get Hotel Id  /hotel/egypt/sharm-el-sheikh/sunrise-montemare-resort-grand-select/
     ${resp_json}=  Call Invia API  start_from=10.06.2023  end_to=17.06.2023  hotel_id=111337    
     ${pocet_radku}    Get Row Count  Sheet1
     FOR  ${radek}  IN RANGE  2  ${pocet_radku}+1
-        ${URL_Hote}       Read Cell Data By Name  Sheet1  A${radek}
-        ${DateFrom}  Read Cell Data By Name  Sheet1  B${radek}
-        ${DateTo}    Read Cell Data By Name  Sheet1  C${radek}
-        ${Strava}    Read Cell Data By Name  Sheet1  D${radek}
-        ${Doprava}   Read Cell Data By Name  Sheet1  E${radek}
+        ${NameHotel}       Read Cell Data By Name  Sheet1  A${radek}
+        ${URL_Hote}       Read Cell Data By Name  Sheet1  B${radek}
+        ${DateFrom}  Read Cell Data By Name  Sheet1  C${radek}
+        ${DateTo}    Read Cell Data By Name  Sheet1  E${radek}
+        ${AmountGuests}       Read Cell Data By Name  Sheet1  F${radek}
+        ${Strava}    Read Cell Data By Name  Sheet1  G${radek}
+        ${Doprava}   Read Cell Data By Name  Sheet1  H${radek}
+        ${NumberOfResults}       Read Cell Data By Name  Sheet1  J${radek}
         ${hotel_id}  Get Hotel Id  ${URL_Hote} 
         ${resp_json}=  Call Invia API  start_from=${DateFrom}  end_to=${DateTo}  hotel_id=${hotel_id}
         log  priceGroup ${resp_json['data'][0]['priceGroup']}
