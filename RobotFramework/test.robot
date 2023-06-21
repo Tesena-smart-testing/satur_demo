@@ -78,10 +78,10 @@ Get info
         ${DateFrom}  Read Cell Data By Name  Sheet1  C${radek}
         ${DateFrom}  Replace String  ${DateFrom}  /  .
         #${DateFrom}   Set Variable  26.07.2023
+        ${TimeShift}   Read Cell Data By Name  Sheet1  D${radek}
         ${DateTo}    Read Cell Data By Name  Sheet1  E${radek}  data_type=NUMBER
         ${DateTo}    Add Time To Date  date=${DateFrom}  time=${DateTo} days  date_format=%d.%m.%Y
         log  ${DateTo}
-        #${DateTo}   Set Variable  26.08.2023
         ${AmountGuests}       Read Cell Data By Name  Sheet1  F${radek}
         ${Strava}    Read Cell Data By Name  Sheet1  G${radek}
         ${Doprava}   Read Cell Data By Name  Sheet1  H${radek}
