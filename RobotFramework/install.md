@@ -26,36 +26,60 @@
 
 ## 1.3. Linux
 
-1. Download Python Source Tarball: Download the Python source tarball that matches your needs from [python.org/downloads/source](https://www.python.org/downloads/source/).
-2. Extract the Tarball: Extract the downloaded tarball.
-3. Configure the Script: Configure the script for the Python installation.
-4. Start the Build Process: Start the build process for Python.
-5. Install/Update Python: Install or update the latest Python version according to your Linux distribution.
+1. In terminal write this commands:
+>1.1. $ sudo apt update
+
+>1.2. $ sudo apt install build-essential zlib1g-dev
+
+>1.3. $ sudo apt installlibncurses5-dev libgdbm-dev libnss3-dev
+
+>1.4. $ sudo apt installlibssl-dev libreadline-dev libffi-dev curl
+
+2. Download Python Source Tarball: Download the Python source tarball that matches your needs from [python.org/downloads/source](https://www.python.org/downloads/source/).
+   
+3. Extract the downloaded tarball archive.  
+
+  > 4.$ cd Python-3.*
+
+  > 5.$ ./configure --Configure the script for the Python installation
+
+  > 6.$ sudo make altinstall --Start the build process for Python  
+
+  > 7.$ sudo apt install python3-pip 
+
 
 # 2. Verify Python and Pip Installation
 
 ## 2.1. Command Line (Windows)
 
-Open the Command Line window and use the following commands:
->python -V
+Open the Command Line window and use the following commands:  
+>python -V  
 
->pip -V
+>pip -V  
 
 The command line should display your Python version and Pip version respectively.
 
 ## 2.2. Command Line (MacOS)
 
-Open the terminal and use the following commands:
->% python3 --version
+Open the terminal and use the following commands:  
+>% python3 --version  
 
->% python3 -m pip --version
+>% python3 -m pip --version  
 
 
 The terminal should display your Python version and Pip version respectively.
 
 ## 2.3. Terminal (Linux)
 
-Use the appropriate terminal command according to your Linux distribution.
+>$ python3 --version  
+
+or  
+
+>$ python --version  
+
+>$ python3 -m pip --version
+
+If the output says Python 3.x, Python 3 has been successfully installed.
 
 # 3. Robot Framework Libraries
 
