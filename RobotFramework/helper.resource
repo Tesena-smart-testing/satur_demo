@@ -10,6 +10,18 @@ Library  DateTime
 *** Variables ***
 ${HOST}=      https://www.invia.sk
 ${ENDPOINT}=  /direct/tour_hotel/ajax-term-picker-data/?selectedTab=tours&useFilterForm=true
+&{TRANSPORTATION}
+...  BRATISLAVA=3_5
+...  VIEDEN=3_6
+&{MEAL}
+...  ALLINCLUSIVE=5
+...  NO_MEAL=4
+...  BREAKFAST=6
+...  DINNER=9
+...  POLPENZIA=2
+...  PLNAPENZIA=1
+...  ULTRAALLINCLUSIVE=11
+
 
 *** Keywords ***
 Call Invia API
