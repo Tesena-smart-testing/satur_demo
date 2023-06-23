@@ -3,6 +3,7 @@ Library  RequestsLibrary
 Library  ExcelRobot
 Library  JSONLibrary
 Library  jsonLibrary.py
+Library  excel_to_json_convertor.py
 Library  String
 Library  DateTime
 Suite Setup  Create Session  Invia  ${HOST}  disable_warnings=1
@@ -69,31 +70,18 @@ Get Hotel Id
     
 
 *** Test Cases ***
-Get info
-    Open Excel   input.xls        
-    ${pocet_radku}    Get Row Count  Sheet1
-    FOR  ${radek}  IN RANGE  2  ${pocet_radku}+1
-        ${NameHotel}       Read Cell Data By Name  Sheet1  A${radek}
-        ${URL_Hote}       Read Cell Data By Name  Sheet1  B${radek}
-        ${DateFrom}  Read Cell Data By Name  Sheet1  C${radek}
-        ${DateFrom}  Replace String  ${DateFrom}  /  .
-        #${DateFrom}   Set Variable  26.07.2023
-        ${TimeShift}   Read Cell Data By Name  Sheet1  D${radek}
-        ${DateTo}    Read Cell Data By Name  Sheet1  E${radek}  data_type=NUMBER
-        ${DateTo}    Add Time To Date  date=${DateFrom}  time=${DateTo} days  date_format=%d.%m.%Y
-        log  ${DateTo}
-        ${AmountGuests}       Read Cell Data By Name  Sheet1  F${radek}
-        ${Strava}    Read Cell Data By Name  Sheet1  G${radek}
-        ${Doprava}   Read Cell Data By Name  Sheet1  H${radek}
-        ${NumberOfResults}       Read Cell Data By Name  Sheet1  J${radek}
-        #${hotel_id}  Get Hotel Id  ${URL_Hote} 
-        ${hotel_id}  Set Variable  183955
-        ${resp_json}=  Call Invia API  start_from=${DateFrom}  end_to=${DateTo}  hotel_id=${hotel_id}
+Get info    
+    ${excel_json}=  Excel To Json Convertor  input.xls 
+    
+    FOR  ${item}  IN  @{excel_json}
+        log  ${item}
+        ${hotel_id}  Get Hotel Id   ${item['URL']}
+        ${date_to}=  Add Time To Date  ${item['termin satur']}  time=${item['pocet noci']} days  date_format=%d.%m.%Y    
+        ${resp_json}=  Call Invia API  start_from=log  ${item['termin satur']}  duration_days=${date_to}  end_to=${DateTo}  hotel_id=${hotel_id}        
         ${cnt_data}=  Get Length  ${resp_json['data']}
         log  Pocet zaznamu: ${cnt_data}
         log  priceGroup ${resp_json['data'][0]['priceGroup']}
         log  pricePerPerson: ${resp_json['data'][0]['pricePerPerson']}
         log  meal: ${resp_json['data'][0]['meal']}
-        #Write To Cell By Name  Sheet1  F${radek}  1${radek}        
-    END
-#//div[@id="js-tour-term-picker-container"]  a zde atribut data-filter obsahuje n1_hotel_id
+    END    
+    
