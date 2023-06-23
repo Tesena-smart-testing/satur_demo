@@ -22,9 +22,17 @@ Get info
         ${resp_json}=  Call Invia API  start_from=${date_from}  duration_days=${item['pocet noci']}  end_to=${EMPTY}  hotel_id=${hotel_id}        
         ${cnt_data}=  Get Length  ${resp_json['data']}
         log  Pocet zaznamu: ${cnt_data}
-        log  priceGroup ${resp_json['data'][0]['priceGroup']}
-        Log To Console  priceGroup ${resp_json['data'][0]['priceGroup']}
-        log  pricePerPerson: ${resp_json['data'][0]['pricePerPerson']}
-        log  meal: ${resp_json['data'][0]['meal']}
+        IF  ${cnt_data} > 0
+            FOR  ${dataItem}  IN  @{resp_json['data']}                
+                log  priceGroup ${dataItem['priceGroup']}
+                Log To Console  priceGroup ${dataItem['priceGroup']}
+                log  pricePerPerson: ${dataItem['pricePerPerson']}
+                log  meal: ${dataItem['meal']}
+            END
+                
+        
+        END
+        
+        
     END    
     
