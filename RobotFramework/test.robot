@@ -17,11 +17,13 @@ Get info
     FOR  ${item}  IN  @{excel_json}
         log  ${item}
         ${hotel_id}  Get Hotel Id   ${item['URL']}
-        ${date_to}=  Add Time To Date  ${item['termin satur']}  time=${item['pocet noci']} days  date_format=%d.%m.%Y            
-        ${resp_json}=  Call Invia API  start_from=${item['termin satur']}  duration_days=${date_to}  end_to=${DateTo}  hotel_id=${hotel_id}        
+        ${date_from}  Replace String  ${item['termin satur']}  /  .   #change date format
+        ${date_to}=  Add Time To Date  ${date_from}  time=${item['pocet noci']} days  date_format=%d.%m.%Y  result_format=%d.%m.%Y            
+        ${resp_json}=  Call Invia API  start_from=${date_from}  duration_days=${item['pocet noci']}  end_to=${EMPTY}  hotel_id=${hotel_id}        
         ${cnt_data}=  Get Length  ${resp_json['data']}
         log  Pocet zaznamu: ${cnt_data}
         log  priceGroup ${resp_json['data'][0]['priceGroup']}
+        Log To Console  priceGroup ${resp_json['data'][0]['priceGroup']}
         log  pricePerPerson: ${resp_json['data'][0]['pricePerPerson']}
         log  meal: ${resp_json['data'][0]['meal']}
     END    
