@@ -54,6 +54,42 @@ Call Invia API
     Pretty Print Json  ${resp.text}
     [Return]  ${resp.json()}
 
+
+
+Call Invia API Availability
+    [Arguments]  ${type}  ${source_id}  ${offer_id}  ${hotel_id}  ${transportation_id}  ${total_price}  ${tourop_id}  ${num_passenger}  ${departure_date_from}
+    Update Session  Invia
+    ${headers}=  Create Dictionary   Content-Type=text/plain;charset=UTF-8  
+    ...                              X-Invia-Api-Trace-Id=e61cab8a1b2814778cf5ae701a2424be
+    ...                              x-invia-api-clientrequest-id=7e1b21fd76343eb47dc41502aede6ae9
+    ...                              Cookie="invia-user-uuid=0000-0000-0000-client_is_bot"
+    ...                              Sec-Ch-Ua="Not.A/Brand";v="8", "Chromium";v="114", "Google Chrome";v="114"
+    ...                              User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36
+    ${body}=  Catenate
+    ...  {
+    ...    "tripData": {
+    ...        "type": ${type},
+    ...        "s_offer_source_id": "${source_id}",
+    ...        "s_offer_id": "${offer_id}",
+    ...        "nl_hotel_id": ${hotel_id},
+    ...        "nl_transportation_id": ${transportation_id},
+    ...        "nl_total_price": ${total_price},
+    ...        "nl_tourop_id": ${tourop_id},
+    ...        "passengers": {
+    ...          "adults": ${num_passenger},
+    ...          "multipleRooms": false
+    ...        },
+    ...        "s_departure_date_from": "${departure_date_from}",
+    ...        "onlineUnavailableReason": ""
+    ...    }
+    ...  }
+    ${resp}=  POST On Session  Invia  ${ENDPOINT}  data=${body}   headers=${headers}  
+    Should Be Equal As Strings  ${resp.status_code}  200  Response: status:${resp.status_code} (expected: 200) : ${resp.json()}
+
+    Pretty Print Json  ${resp.text}
+    [Return]  ${resp.json()}
+
+
 Get Hotel Id
     [Arguments]  ${ENDPOINT_HOTEL}
     [Documentation]  vyhleda ID hotelu z URL
@@ -76,7 +112,8 @@ Get info
         ${NameHotel}       Read Cell Data By Name  Sheet1  A${radek}
         ${URL_Hote}       Read Cell Data By Name  Sheet1  B${radek}
         ${DateFrom}  Read Cell Data By Name  Sheet1  C${radek}
-        ${DateFrom}  Replace String  ${DateFrom}  /  .
+        ${DateFrom}   Add Time To Date  date=${DateFrom}  time=${DateFrom} days  date_format=%d.%m.%Y
+        log  ${DateFrom}
         #${DateFrom}   Set Variable  26.07.2023
         ${TimeShift}   Read Cell Data By Name  Sheet1  D${radek}
         ${DateTo}    Read Cell Data By Name  Sheet1  E${radek}  data_type=NUMBER
