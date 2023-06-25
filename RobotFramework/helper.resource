@@ -10,22 +10,23 @@ Library  DateTime
 *** Variables ***
 ${HOST}=      https://www.invia.sk
 ${ENDPOINT}=  /direct/tour_hotel/ajax-term-picker-data/?selectedTab=tours&useFilterForm=true
+${ENDPOINT_AVAILABILITY}=  /direct/checkout_trip-request-handler/ajax-check-room-availability/
 &{TRANSPORTATION}
-...  BRATISLAVA=3_5
-...  VIEDEN=3_6
+...  BTS=3_5
+...  VIE=3_6
 &{MEAL}
-...  ALLINCLUSIVE=5
-...  NO_MEAL=4
-...  BREAKFAST=6
-...  DINNER=9
-...  POLPENZIA=2
-...  PLNAPENZIA=1
-...  ULTRAALLINCLUSIVE=11
+...  All inclusive=5
+...  Bez stravy=4
+...  Raňajky=6
+...  Večera=9
+...  Polpenzia=2
+...  Plná penzia=1
+...  Ultra All inclusive=11
 
 
 *** Keywords ***
 Call Invia API
-    [Arguments]  ${start_from}  ${hotel_id}  ${duration_days}   ${end_to}=${EMPTY}
+    [Arguments]  ${start_from}  ${hotel_id}  ${duration_days}  ${meal}  ${transport}  ${adults}=2  ${children}=0  ${end_to}=${EMPTY}  ${tour_operator}=foreign
     Update Session  Invia
     ${headers}=  Create Dictionary   Content-Type=text/plain;charset=UTF-8  
     ...                              X-Invia-Api-Trace-Id=0043d2eb9e5072867bc3f539bafc65fd
@@ -37,25 +38,26 @@ Call Invia API
     ...  {
     ...    "filter":
     ...        {
-    ...            "nl_transportation_id":[],
+    ...            "nl_transportation_id":["${transport}"],
     ...            "nl_length_from":${duration_days},
     ...            "nl_length_to":${duration_days},
-    ...            "nl_meal_id":[],
-    ...            "nl_occupancy_adults":2,
-    ...            "nl_occupancy_children":0,
+    ...            "nl_meal_id":["${meal}"],
+    ...            "nl_occupancy_adults":${adults},
+    ...            "nl_occupancy_children":${children},
     ...            "nl_ages_children":[],
     ...            "d_start_from":"${start_from}",
     ...            "d_end_to":"${end_to}",
     ...            "page":1,
     ...            "nl_tourop_id":[],
+    ...            "domestic_tour_operator": "${tour_operator}",
     ...            "offsets":"",
-    ...            "duration":"Custom",
+    ...            "duration":"Custom range",
     ...            "nl_promotion_category_id":"",
     ...            "nl_hotel_id":${hotel_id}
     ...        },
     ...    "sorter":
     ...        {
-    ...            "sort_ascent_by":"date"
+    ...            "sort_ascent_by":"price"
     ...        }
     ...  }
     ${resp}=  POST On Session  Invia  ${ENDPOINT}  data=${body}   headers=${headers}  
@@ -93,7 +95,7 @@ Call Invia API Availability
     ...        "onlineUnavailableReason": ""
     ...    }
     ...  }
-    ${resp}=  POST On Session  Invia  ${ENDPOINT}  data=${body}   headers=${headers}  
+    ${resp}=  POST On Session  Invia  ${ENDPOINT_AVAILABILITY}  data=${body}   headers=${headers}  
     Should Be Equal As Strings  ${resp.status_code}  200  Response: status:${resp.status_code} (expected: 200) : ${resp.json()}
 
     Pretty Print Json  ${resp.text}

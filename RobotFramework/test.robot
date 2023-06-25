@@ -17,17 +17,44 @@ Get info
     FOR  ${item}  IN  @{excel_json}
         log  ${item}
         ${hotel_id}  Get Hotel Id   ${item['URL']}
-        ${date_from}  Replace String  ${item['termin satur']}  /  .   #change date format
-        ${date_to}=  Add Time To Date  ${date_from}  time=${item['pocet noci']} days  date_format=%d.%m.%Y  result_format=%d.%m.%Y            
-        ${resp_json}=  Call Invia API  start_from=${date_from}  duration_days=${item['pocet noci']}  end_to=${EMPTY}  hotel_id=${hotel_id}        
+        ${date_from_orig}  Replace String  ${item['termin satur']}  /  .   #change date format
+        ${date_from}=  Add Time To Date  ${date_from_orig}  time=${item['terminovy posun']} days  date_format=%d.%m.%Y  result_format=%d.%m.%Y
+        ${date_to}=  Add Time To Date  ${date_from_orig}  time=${item['pocet noci']} days  date_format=%d.%m.%Y  result_format=%d.%m.%Y
+        ${meal_id}=  Set Variable   ${MEAL['${item['strava']}']}                      
+        ${transportation_id}=  Set Variable   ${TRANSPORTATION['${item['odlet']}']}
+        @{occupancies}=  Split String  ${item['PAX']}  +   #get number of adults and children from PAX
+        ${adults}=  Set Variable  ${occupancies}[0]
+        ${children}=  Set Variable  ${occupancies}[1]
+        ${resp_json}=  Call Invia API  
+        ...                            start_from=${date_from}
+        ...                            hotel_id=${hotel_id}  
+        ...                            duration_days=${item['pocet noci']}
+        ...                            meal=${meal_id}
+        ...                            transport=${transportation_id}
+        ...                            adults=${adults}   
+        ...                            children=${children}
+        ...                            end_to=${date_to}        
         ${cnt_data}=  Get Length  ${resp_json['data']}
         log  Pocet zaznamu: ${cnt_data}
         IF  ${cnt_data} > 0
-            FOR  ${dataItem}  IN  @{resp_json['data']}                
-                log  priceGroup ${dataItem['priceGroup']}
-                Log To Console  priceGroup ${dataItem['priceGroup']}
+            FOR  ${dataItem}  IN  @{resp_json['data']}
+                log  ${dataItem}              
+                log  priceGroup ${dataItem['priceGroup']}                
                 log  pricePerPerson: ${dataItem['pricePerPerson']}
                 log  meal: ${dataItem['meal']}
+                log  OfferID: ${dataItem['favouriteData']['offerData']['offerId']}
+                ${resp_json_availability}=   Call Invia API Availability  
+                ...                          type=1  
+                ...                          source_id=${dataItem['favouriteData']['offerData']['offerSourceId']}
+                ...                          offer_id=${dataItem['favouriteData']['offerData']['offerId']}  
+                ...                          hotel_id=${hotel_id}
+                ...                          transportation_id=${transportation_id}  
+                ...                          total_price=${dataItem['priceGroup']}  
+                ...                          tourop_id=${dataItem['favouriteData']['offerData']['tourOperatorId']}  
+                ...                          num_passenger=2  
+                ...                          departure_date_from=
+                
+                #output: izba, CK, termin CK, cena za osobu, cena za zajezd, datum
             END
                 
         
