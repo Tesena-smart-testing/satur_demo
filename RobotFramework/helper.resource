@@ -69,7 +69,7 @@ Call Invia API
 
 
 Call Invia API Availability
-    [Arguments]  ${type}  ${source_id}  ${offer_id}  ${hotel_id}  ${transportation_id}  ${total_price}  ${tourop_id}  ${num_passenger}  ${departure_date_from}
+    [Arguments]  ${type}  ${source_id}  ${offer_id}  ${hotel_id}  ${transportation_id}  ${total_price}  ${tourop_id}  ${num_passenger}  ${departure_date_from}  ${departure_date_to}
     Update Session  Invia
     ${headers}=  Create Dictionary   Content-Type=text/plain;charset=UTF-8  
     ...                              X-Invia-Api-Trace-Id=e61cab8a1b2814778cf5ae701a2424be
@@ -92,6 +92,7 @@ Call Invia API Availability
     ...          "multipleRooms": false
     ...        },
     ...        "s_departure_date_from": "${departure_date_from}",
+    ...        "s_departure_date_to": "${departure_date_to}",
     ...        "onlineUnavailableReason": ""
     ...    }
     ...  }
