@@ -90,5 +90,3 @@ In the Command Line or terminal, use the following commands:
 >pip install robotframework-requests
 
 >pip install robotframework-jsonlibrary
-
->pip install robotframework-excel

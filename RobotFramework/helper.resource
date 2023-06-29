@@ -44,7 +44,7 @@ Call Invia API
     ...            "nl_meal_id":["${meal}"],
     ...            "nl_occupancy_adults":${adults},
     ...            "nl_occupancy_children":${children},
-    ...            "nl_ages_children":[],
+    ...            "nl_ages_children":[9],
     ...            "d_start_from":"${start_from}",
     ...            "d_end_to":"${end_to}",
     ...            "page":1,
