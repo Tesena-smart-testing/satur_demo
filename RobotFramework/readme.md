@@ -13,8 +13,7 @@
     - [2.2. Command Line (MacOS)](#22-command-line-macos)
     - [2.3. Terminal (Linux)](#23-terminal-linux)
   - [3. Libraries](#3-libraries)
-   - [4. MySql installation](#4-MySql-installation)
- 
+  - [4. MySql installation](#4-MySql-installation)
 
 ## 1. Python installation
 
@@ -102,17 +101,17 @@ In the Command Line or terminal, use the following commands:
 > pip install json
 
 > pip install mysql-connector-python
-
-
+>
+> pip install pandas
 
 ## 4.MySql installation
 
 MacOs
-1.Download MySQL Community from the official site https://www.mysql.com/downloads/ and install it on your laptop. 
+1.Download MySQL Community from the official site https://www.mysql.com/downloads/ and install it on your laptop.
 There is Youtube manual how to do it: https://www.youtube.com/watch?v=2cvH0HRjZF8&list=PLZDOU071E4v4S95kbGgRebjKYC5eqSGPM&index=2
 
 Windows:
-1.1.Download MySQL Community from the official site https://www.mysql.com/downloads/ and install it on your laptop. 
+1.1.Download MySQL Community from the official site https://www.mysql.com/downloads/ and install it on your laptop.
 There is Youtube manual how to do it: https://www.youtube.com/watch?v=2om3byn2lxs
 
 2.Open MySql in your terminal and create DB: CREATE DATABASE Satur;
@@ -141,5 +140,3 @@ CREATE TABLE Satur (
 );
 
  Once the table is created, you can run your Python script to insert data into the table.
-
-
