@@ -12,7 +12,14 @@ Library  DateTime
 Resource  helper.resource
 Suite Setup  Create Session  Invia  ${HOST}  disable_warnings=1
 Suite Teardown  Delete All Sessions
-  
+
+*** Variables ***
+#MySQL configuration
+${DBHOST}=  localhost
+${DBUSER}=  root
+${DBPASS}=  Create1234+
+${DBNAME}=  Satur
+
 
 *** Test Cases ***
 Get info
@@ -34,6 +41,7 @@ Get info
         @{occupancies}=  Split String  ${item['PAX']}  +   #get number of adults and children from PAX
         ${adults}=  Set Variable  ${occupancies}[0]
         ${children}=  Set Variable  ${occupancies}[1]
+        ${pocet_vysledku}=  Set Variable  ${item['max pocet vysledkov']}
         ${resp_json}=  Call Invia API     #call API with data from current row in excel
         ...                            start_from=${date_from}
         ...                            hotel_id=${hotel_id}  
@@ -46,8 +54,9 @@ Get info
         ${cnt_data}=  Get Length  ${resp_json['data']}
         log  Pocet zaznamu: ${cnt_data}   #we can parse datas only from non-empty response                
         IF  ${cnt_data} > 0
+            ${pocitadlo}=  Set Variable  0
             FOR  ${dataItem}  IN  @{resp_json['data']}  #each "dates" field contains one tour
-                log  ${dataItem}              
+                log  ${dataItem}                              
                 log  priceGroup ${dataItem['priceGroup']}                
                 log  pricePerPerson: ${dataItem['pricePerPerson']}
                 log  meal: ${dataItem['meal']}
@@ -66,12 +75,20 @@ Get info
                 ...                          departure_date_from=${dateStart}[0]
                 ...                          departure_date_to=${dateEnd}[0]
                 #TODO: save only available to output.   IF available=true
-                #output: izba, CK, termin CK, cena za osobu, cena za zajezd, datum
-                Log To Console  ${item['url']} ; izba=${dataItem['roomType']} ; CK=${dataItem['tourOperatorNameForClient']} ; termin CK=${dataItem['outboundDate']}T${dataItem['outboundTimes']} - ${dataItem['returnDate']}T${dataItem['returnTimes']} ; priceGroup ${dataItem['priceGroup']}
-                &{output_excel_row}=  Copy Dictionary  ${item}  #we use origin excel row and we can add values from result (as output)
-                Set To Dictionary  ${output_excel_row}  izba=${dataItem['roomType']}  CK=${dataItem['tourOperatorNameForClient']}  termin CK=${dataItem['outboundDate']}T${dataItem['outboundTimes']}  cena za osobu=${dataItem['pricePerPerson']}  cena za zajezd=${dataItem['priceGroup']}  timestamp=${current_timestamp}
-                log  ${output_excel_row}
-                Append To List  ${output}  ${output_excel_row}   #add output excel row to do final output array
+                ${available}=  Set Variable  ${True}
+                IF  ${available}
+                    #output: izba, CK, termin CK, cena za osobu, cena za zajezd, datum
+                    Log To Console  ${item['url']} ; izba=${dataItem['roomType']} ; CK=${dataItem['tourOperatorNameForClient']} ; termin CK=${dataItem['outboundDate']}T${dataItem['outboundTimes']} - ${dataItem['returnDate']}T${dataItem['returnTimes']} ; priceGroup ${dataItem['priceGroup']}
+                    ${pocitadlo}=  Set Variable  ${pocitadlo} + 1
+                    &{output_excel_row}=  Copy Dictionary  ${item}  #we use origin excel row and we can add values from result (as output)
+                    Set To Dictionary  ${output_excel_row}  izba=${dataItem['roomType']}  CK=${dataItem['tourOperatorNameForClient']}  termin CK=${dataItem['outboundDate']}T${dataItem['outboundTimes']}  cena za osobu=${dataItem['pricePerPerson']}  cena za zajezd=${dataItem['priceGroup']}  timestamp=${current_timestamp}
+                    log  ${output_excel_row}
+                    Append To List  ${output}  ${output_excel_row}   #add output excel row to do final output array
+                    IF  ${pocitadlo} == ${pocet_vysledku}                        
+                        BREAK
+                    END
+                END
+                
             END
         ELSE  #If we get empty result, to excel we put N/A values
             Log To Console  ${item['url']} ; N/A , 0 records for date: ${date_from} - ${date_to} 
@@ -90,5 +107,6 @@ Get info
     Pretty Print Json  ${output_string}
     Create File  data_output.json  ${output_string}
     Json To Excel Convertor  data_output.json  output_${current_date}.xlsx
-    Send Data To Db
+    Send Data To Db  jsonfile=data_output.json  dbhost=${DBHOST}  dbuser=${DBUSER}  dbpassword=${DBPASS}  database_name=${DBNAME}
+    
     
