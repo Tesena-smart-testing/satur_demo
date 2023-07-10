@@ -12,7 +12,8 @@
     - [2.1. Command Line (Windows)](#21-command-line-windows)
     - [2.2. Command Line (MacOS)](#22-command-line-macos)
     - [2.3. Terminal (Linux)](#23-terminal-linux)
-  - [3. Robot Framework Libraries](#3-robot-framework-libraries)
+  - [3. Libraries](#3-libraries)
+  - [4. MySql installation](#4-MySql-installation)
 
 ## 1. Python installation
 
@@ -31,18 +32,16 @@
 
 1. In terminal write this commands:
 
->1.1. $ sudo apt update
+> 1.1. $ sudo apt update
 
->1.2. $ sudo apt install build-essential zlib1g-dev
+> 1.2. $ sudo apt install build-essential zlib1g-dev
 
->1.3. $ sudo apt installlibncurses5-dev libgdbm-dev libnss3-dev
+> 1.3. $ sudo apt installlibncurses5-dev libgdbm-dev libnss3-dev
 
->  1.4. $ sudo apt installlibssl-dev libreadline-dev libffi-dev curl
+> 1.4. $ sudo apt installlibssl-dev libreadline-dev libffi-dev curl
 
 2. Download Python Source Tarball: Download the Python source tarball that matches your needs from [python.org/downloads/source](https://www.python.org/downloads/source/).
-
 3. Extract the downloaded tarball archive.
-
 4. In terminal write this commands:
 
 > 4.1 $ cd Python-3.*
@@ -57,43 +56,87 @@
 
 ### 2.1. Command Line (Windows)
 
-Open the Command Line window and use the following commands:  
->python -V  
+Open the Command Line window and use the following commands:
 
->pip -V  
+> python -V
+
+> pip -V
 
 The command line should display your Python version and Pip version respectively.
 
 ### 2.2. Command Line (MacOS)
 
-Open the terminal and use the following commands:  
->% python3 --version  
+Open the terminal and use the following commands:
 
->% python3 -m pip --version  
+> % python3 --version
 
+> % python3 -m pip --version
 
 The terminal should display your Python version and Pip version respectively.
 
 ### 2.3. Terminal (Linux)
 
->$ python3 --version  
+> $ python3 --version
 
-or  
+or
 
->$ python --version  
+> $ python --version
 
->$ python3 -m pip --version
+> $ python3 -m pip --version
 
 If the output says Python 3.x, Python 3 has been successfully installed.
 
-## 3. Robot Framework Libraries
+## 3. Libraries
 
 In the Command Line or terminal, use the following commands:
 
->pip install robotframework
+> pip install robotframework
 
->pip install robotframework-requests
+> pip install robotframework-requests
 
->pip install robotframework-jsonlibrary
+> pip install robotframework-jsonlibrary
 
->pip install robotframework-excel
+> pip install robotframework-excel
+
+> pip install json
+
+> pip install mysql-connector-python
+>
+> pip install pandas
+
+## 4.MySql installation
+
+MacOs
+1.Download MySQL Community from the official site https://www.mysql.com/downloads/ and install it on your laptop.
+There is Youtube manual how to do it: https://www.youtube.com/watch?v=2cvH0HRjZF8&list=PLZDOU071E4v4S95kbGgRebjKYC5eqSGPM&index=2
+
+Windows:
+1.1.Download MySQL Community from the official site https://www.mysql.com/downloads/ and install it on your laptop.
+There is Youtube manual how to do it: https://www.youtube.com/watch?v=2om3byn2lxs
+
+2.Open MySql in your terminal and create DB: CREATE DATABASE Satur;
+3.Run the SQL statements in your MySQL console to create the "Satur" table with the specified columns.
+
+USE Satur;
+
+CREATE TABLE Satur (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  Hotel VARCHAR(255),
+  URL VARCHAR(255),
+  termin_satur VARCHAR(255),
+  terminovy_posun VARCHAR(255),
+  pocet_noci INT,
+  PAX VARCHAR(255),
+  strava VARCHAR(255),
+  odlet VARCHAR(255),
+  tuzemske_ck VARCHAR(255),
+  max_pocet_vysledkov INT,
+  izba VARCHAR(255),
+  CK VARCHAR(255),
+  termin_ck VARCHAR(255),
+  cena_za_osobu DECIMAL(10, 2),
+  cena_za_zajezd DECIMAL(10, 2),
+  timestamp VARCHAR(255)
+);
+
+ Once the table is created, you can run your Python script to insert data into the table.
