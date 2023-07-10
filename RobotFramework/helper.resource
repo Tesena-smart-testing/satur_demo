@@ -15,7 +15,7 @@ ${ENDPOINT_AVAILABILITY}=  /direct/checkout_trip-request-handler/ajax-check-room
 ...  BTS=3_5
 ...  VIE=3_6
 &{MEAL}
-...  All inclusive=5
+...  All Inclusive=5
 ...  Bez stravy=4
 ...  Raňajky=6
 ...  Večera=9

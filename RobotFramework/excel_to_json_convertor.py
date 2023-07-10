@@ -2,7 +2,7 @@ import pandas as pd
 import json
 from datetime import datetime
 
-def excel_to_json_convertor(excel_file_path, sheet_name="Sheet1", output_file_path="data.json"):
+def excel_to_json_convertor(excel_file_path, sheet_name="Hárok1", output_file_path="data.json"):
     # Read the Excel file
     excel_data_df = pd.read_excel(excel_file_path, sheet_name=sheet_name)
 
