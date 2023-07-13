@@ -23,6 +23,7 @@ ${DBNAME}=  Satur
 
 *** Test Cases ***
 Get info
+    Log to console  -- Start script --
     @{output}=  Create List
     ${current_date}=  Get Current Date  result_format=%Y_%m_%d    
     ${current_timestamp}=  Get Current Date
@@ -36,8 +37,14 @@ Get info
         ${date_from_orig}  Replace String  ${item['termin satur']}  /  .   #change date format
         ${date_from}=  Add Time To Date  ${date_from_orig}  time=${item['terminovy posun']} days  date_format=%d.%m.%Y  result_format=%d.%m.%Y
         ${date_to}=  Add Time To Date  ${date_from_orig}  time=${item['pocet noci']} days  date_format=%d.%m.%Y  result_format=%d.%m.%Y
+        #${date_to}=  Add Time To Date  ${date_to}  time=1 days  date_format=%d.%m.%Y  result_format=%d.%m.%Y
         ${meal_id}=  Set Variable   ${MEAL['${item['strava']}']}                      
         ${transportation_id}=  Set Variable   ${TRANSPORTATION['${item['odlet']}']}        
+        IF  ${item['tuzemske CK']} == 1
+            ${CK} =  Set Variable  domestic
+        ELSE  
+            ${CK} =  Set Variable  foreign
+        END
         @{occupancies}=  Split String  ${item['PAX']}  +   #get number of adults and children from PAX
         ${adults}=  Set Variable  ${occupancies}[0]
         ${children}=  Set Variable  ${occupancies}[1]
@@ -50,7 +57,8 @@ Get info
         ...                            transport=${transportation_id}
         ...                            adults=${adults}   
         ...                            children=${children}
-        ...                            end_to=${date_to}        
+        ...                            end_to=${date_to}
+        ...                            tour_operator=${CK}        
         ${cnt_data}=  Get Length  ${resp_json['data']}
         log  Pocet zaznamu: ${cnt_data}   #we can parse datas only from non-empty response                
         IF  ${cnt_data} > 0
@@ -62,8 +70,8 @@ Get info
                 log  meal: ${dataItem['meal']}
                 log  OfferID: ${dataItem['favouriteData']['offerData']['offerId']}
                 @{dateStart}=  Split String   ${dataItem['favouriteData']['offerData']['dateStart']}  T   #format: 2023-09-13T00:00:00+02:00
-                @{dateEnd}=  Split String   ${dataItem['favouriteData']['offerData']['dateEnd']}  T
-                ${resp_json_availability}=   Call Invia API Availability  #for each tour we should get info about availability
+                @{dateEnd}=  Split String   ${dataItem['favouriteData']['offerData']['dateEnd']}  T                
+                ${resp_json_availability}=   Call Invia API Availability
                 ...                          type=1  
                 ...                          source_id=${dataItem['favouriteData']['offerData']['offerSourceId']}
                 ...                          offer_id=${dataItem['favouriteData']['offerData']['offerId']}  
@@ -71,9 +79,13 @@ Get info
                 ...                          transportation_id=${transportation_id}  
                 ...                          total_price=${dataItem['priceGroup']}  
                 ...                          tourop_id=${dataItem['favouriteData']['offerData']['tourOperatorId']}  
-                ...                          num_passenger=2  
-                ...                          departure_date_from=${dateStart}[0]
-                ...                          departure_date_to=${dateEnd}[0]
+                ...                          tourop_code=${dataItem['favouriteData']['offerData']['offerTouropCode']}  
+                ...                          num_passenger=${adults}  
+                ...                          num_children=${children}  
+                ...                          departure_date_from=${dateStart}[0]  
+                ...                          departure_date_to=${dateEnd}[0]  
+                ...                          country_id=${dataItem['favouriteData']['offerData']['countryId'][0]}
+                ...                          locality_id=${dataItem['favouriteData']['offerData']['localityId'][0]}
                 #TODO: save only available to output.   IF available=true
                 ${available}=  Set Variable  ${True}
                 IF  ${available}

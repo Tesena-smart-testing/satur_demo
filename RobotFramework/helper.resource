@@ -24,6 +24,7 @@ ${ENDPOINT_AVAILABILITY}=  /direct/checkout_trip-request-handler/ajax-check-room
 ...  Ultra All inclusive=11
 
 
+
 *** Keywords ***
 Call Invia API
     [Arguments]  ${start_from}  ${hotel_id}  ${duration_days}  ${meal}  ${transport}  ${adults}=2  ${children}=0  ${end_to}=${EMPTY}  ${tour_operator}=foreign
@@ -44,7 +45,7 @@ Call Invia API
     ...            "nl_meal_id":["${meal}"],
     ...            "nl_occupancy_adults":${adults},
     ...            "nl_occupancy_children":${children},
-    ...            "nl_ages_children":[9],
+    ...            "nl_ages_children":[],
     ...            "d_start_from":"${start_from}",
     ...            "d_end_to":"${end_to}",
     ...            "page":1,
@@ -69,31 +70,47 @@ Call Invia API
 
 
 Call Invia API Availability
-    [Arguments]  ${type}  ${source_id}  ${offer_id}  ${hotel_id}  ${transportation_id}  ${total_price}  ${tourop_id}  ${num_passenger}  ${departure_date_from}  ${departure_date_to}
+    [Arguments]  ${type}  ${source_id}  ${offer_id}  ${hotel_id}  ${transportation_id}  ${total_price}  ${tourop_id}  ${tourop_code}  ${num_passenger}  ${num_children}  ${departure_date_from}  ${departure_date_to}  ${country_id}  ${locality_id}  ${length_days}=8  
     Update Session  Invia
     ${headers}=  Create Dictionary   Content-Type=text/plain;charset=UTF-8  
-    ...                              X-Invia-Api-Trace-Id=e61cab8a1b2814778cf5ae701a2424be
-    ...                              x-invia-api-clientrequest-id=7e1b21fd76343eb47dc41502aede6ae9
-    ...                              Cookie="invia-user-uuid=0000-0000-0000-client_is_bot"
+    ...                              X-Invia-Api-Trace-Id=0043d2eb9e5072867bc3f539bafc65fd
+    ...                              x-invia-api-clientrequest-id=a4abe60a7b3e370f78199f027c6108b2
+    ...                              Cookie="invia-user-uuid=58d5c02d-a830-4f6d-ad66-01406bb842e6"
     ...                              Sec-Ch-Ua="Not.A/Brand";v="8", "Chromium";v="114", "Google Chrome";v="114"
     ...                              User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36
+    @{transport} =  Split String  ${transportation_id}  _
     ${body}=  Catenate
     ...  {
     ...    "tripData": {
-    ...        "type": ${type},
-    ...        "s_offer_source_id": "${source_id}",
+    ...        "type": ${type},    
     ...        "s_offer_id": "${offer_id}",
-    ...        "nl_hotel_id": ${hotel_id},
-    ...        "nl_transportation_id": ${transportation_id},
-    ...        "nl_total_price": ${total_price},
+    ...        "s_offer_source_id": "${source_id}",
+    ...        "nl_form_type": 1,
     ...        "nl_tourop_id": ${tourop_id},
-    ...        "passengers": {
-    ...          "adults": ${num_passenger},
-    ...          "multipleRooms": false
-    ...        },
+    ...        "s_offer_tourop_code": ${tourop_code},
+    ...        "nl_room_dict_id": null,
+    ...        "nl_country_id": ${country_id},
+    ...        "nl_tour_id": null,
+    ...        "nl_locality_id": ${locality_id},
     ...        "s_departure_date_from": "${departure_date_from}",
     ...        "s_departure_date_to": "${departure_date_to}",
-    ...        "onlineUnavailableReason": ""
+    ...        "nl_stay_length_days": ${length_days},    
+    ...        "nl_hotel_id": ${hotel_id},
+    ...        "nl_transportation_id": ${transport}[0],
+    ...        "nl_airport_id": ${transport}[1],
+    ...        "nl_departure_id": null,
+    ...        "nl_total_price": ${total_price},
+    ...        "passengers": {
+    ...          "adults": ${num_passenger},
+    ...          "children":  ${num_children},
+    ...          "children_age":[9],
+    ...          "multipleRooms": ${False}
+    ...        },
+    ...        "roomOccupancy": {
+    ...            "adults": 0,
+    ...            "children": 0
+    ...        },    
+    ...        "liveAAPC": ${True}
     ...    }
     ...  }
     ${resp}=  POST On Session  Invia  ${ENDPOINT_AVAILABILITY}  data=${body}   headers=${headers}  
