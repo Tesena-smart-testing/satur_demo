@@ -86,6 +86,8 @@ Get info
                 ...                          departure_date_to=${dateEnd}[0]  
                 ...                          country_id=${dataItem['favouriteData']['offerData']['countryId'][0]}
                 ...                          locality_id=${dataItem['favouriteData']['offerData']['localityId'][0]}
+                ...                          referer=${item['url']}
+                ...                          length_days=${item['pocet noci']}
                 #TODO: save only available to output.   IF available=true
                 ${available}=  Set Variable  ${True}
                 IF  ${available}

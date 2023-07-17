@@ -140,3 +140,13 @@ CREATE TABLE Satur (
 );
 
  Once the table is created, you can run your Python script to insert data into the table.
+
+
+## 5. Jenkins installation
+
+You can use Jenkins for periodicaly run of this script. For each build you can archive XLS output file, RobotFramework HTML report and anything else.
+For install open URL: https://www.jenkins.io/download/
+Usually Jenkins runs on port 8080, you can choose other one.
+
+
+
