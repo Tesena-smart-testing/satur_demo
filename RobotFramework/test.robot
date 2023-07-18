@@ -48,6 +48,13 @@ Get info
         @{occupancies}=  Split String  ${item['PAX']}  +   #get number of adults and children from PAX
         ${adults}=  Set Variable  ${occupancies}[0]
         ${children}=  Set Variable  ${occupancies}[1]
+        IF  ${children} == 1
+            ${children_age} =  Set Variable  9
+        ELSE IF  ${children} == 2
+            ${children_age} =  Set Variable  9,9
+        ELSE 
+            ${children_age} =  Set Variable  ${EMPTY}
+        END        
         ${pocet_vysledku}=  Set Variable  ${item['max pocet vysledkov']}
         ${resp_json}=  Call Invia API     #call API with data from current row in excel
         ...                            start_from=${date_from}
@@ -57,6 +64,7 @@ Get info
         ...                            transport=${transportation_id}
         ...                            adults=${adults}   
         ...                            children=${children}
+        ...                            children_age=${children_age}
         ...                            end_to=${date_to}
         ...                            tour_operator=${CK}        
         ${cnt_data}=  Get Length  ${resp_json['data']}
@@ -89,7 +97,7 @@ Get info
                 ...                          referer=${item['url']}
                 ...                          length_days=${item['pocet noci']}
                 #TODO: save only available to output.   IF available=true
-                ${available}=  Set Variable  ${True}
+                ${available}=  Set Variable  ${resp_json_availability['customData']['isAvailable']}
                 IF  ${available}
                     #output: izba, CK, termin CK, cena za osobu, cena za zajezd, datum
                     Log To Console  ${item['url']} ; izba=${dataItem['roomType']} ; CK=${dataItem['tourOperatorNameForClient']} ; termin CK=${dataItem['outboundDate']}T${dataItem['outboundTimes']} - ${dataItem['returnDate']}T${dataItem['returnTimes']} ; priceGroup ${dataItem['priceGroup']}

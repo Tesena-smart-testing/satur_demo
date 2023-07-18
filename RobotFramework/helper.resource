@@ -27,7 +27,7 @@ ${ENDPOINT_AVAILABILITY}=  /direct/checkout_trip-request-handler/ajax-check-room
 
 *** Keywords ***
 Call Invia API
-    [Arguments]  ${start_from}  ${hotel_id}  ${duration_days}  ${meal}  ${transport}  ${adults}=2  ${children}=0  ${end_to}=${EMPTY}  ${tour_operator}=foreign
+    [Arguments]  ${start_from}  ${hotel_id}  ${duration_days}  ${meal}  ${transport}  ${adults}=2  ${children}=0  ${children_age}=${EMPTY}  ${end_to}=${EMPTY}  ${tour_operator}=foreign
     Update Session  Invia
     ${headers}=  Create Dictionary   Content-Type=text/plain;charset=UTF-8  
     ...                              X-Invia-Api-Trace-Id=0043d2eb9e5072867bc3f539bafc65fd
@@ -45,7 +45,7 @@ Call Invia API
     ...            "nl_meal_id":["${meal}"],
     ...            "nl_occupancy_adults":${adults},
     ...            "nl_occupancy_children":${children},
-    ...            "nl_ages_children":[],
+    ...            "nl_ages_children":[${children_age}],
     ...            "d_start_from":"${start_from}",
     ...            "d_end_to":"${end_to}",
     ...            "page":1,
@@ -70,7 +70,7 @@ Call Invia API
 
 
 Call Invia API Availability
-    [Arguments]  ${type}  ${source_id}  ${offer_id}  ${hotel_id}  ${transportation_id}  ${total_price}  ${tourop_id}  ${tourop_code}  ${num_passenger}  ${num_children}  ${departure_date_from}  ${departure_date_to}  ${country_id}  ${locality_id}  ${referer}  ${length_days}=8  
+    [Arguments]  ${type}  ${source_id}  ${offer_id}  ${hotel_id}  ${transportation_id}  ${total_price}  ${tourop_id}  ${tourop_code}  ${num_passenger}  ${num_children}  ${departure_date_from}  ${departure_date_to}  ${country_id}  ${locality_id}  ${referer}  ${length_days}=8  ${children_age}=${EMPTY}
     Update Session  Invia
     ${headers}=  Create Dictionary   content-type=application/json      
     ...                              x-invia-api-clientrequest-id=e45a1f8aead6f3d902507b473d3b7a78
@@ -127,7 +127,7 @@ Call Invia API Availability
     ...        "passengers": {
     ...          "adults": ${num_passenger},
     ...          "children":  ${num_children},
-    ...          "children_age":[],
+    ...          "children_age":[${children_age}],
     ...          "multipleRooms": false
     ...        },
     ...        "roomOccupancy": {
