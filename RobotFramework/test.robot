@@ -95,12 +95,11 @@ Get info
                 ...                          country_id=${dataItem['favouriteData']['offerData']['countryId'][0]}
                 ...                          locality_id=${dataItem['favouriteData']['offerData']['localityId'][0]}
                 ...                          referer=${item['url']}
-                ...                          length_days=${item['pocet noci']}
-                #TODO: save only available to output.   IF available=true
+                ...                          length_days=${item['pocet noci']}                
                 ${available}=  Set Variable  ${resp_json_availability['customData']['isAvailable']}
                 IF  ${available}
                     #output: izba, CK, termin CK, cena za osobu, cena za zajezd, datum
-                    Log To Console  ${item['url']} ; izba=${dataItem['roomType']} ; CK=${dataItem['tourOperatorNameForClient']} ; termin CK=${dataItem['outboundDate']}T${dataItem['outboundTimes']} - ${dataItem['returnDate']}T${dataItem['returnTimes']} ; priceGroup ${dataItem['priceGroup']}
+                    Log To Console  ${item['hotel']} ; izba=${dataItem['roomType']} ; CK=${dataItem['tourOperatorNameForClient']} ; termin CK=${dataItem['outboundDate']}T${dataItem['outboundTimes']} - ${dataItem['returnDate']}T${dataItem['returnTimes']} ; priceGroup ${dataItem['priceGroup']} ; PAX ${item['PAX']}
                     ${pocitadlo}=  Set Variable  ${pocitadlo} + 1
                     &{output_excel_row}=  Copy Dictionary  ${item}  #we use origin excel row and we can add values from result (as output)
                     Set To Dictionary  ${output_excel_row}  izba=${dataItem['roomType']}  CK=${dataItem['tourOperatorNameForClient']}  termin CK=${dataItem['outboundDate']}T${dataItem['outboundTimes']}  cena za osobu=${dataItem['pricePerPerson']}  cena za zajezd=${dataItem['priceGroup']}  timestamp=${current_timestamp}
@@ -109,11 +108,17 @@ Get info
                     IF  ${pocitadlo} == ${pocet_vysledku}                        
                         BREAK
                     END
-                END
-                
+                END                
+            END
+            IF  ${pocitadlo} == 0  #all tours for this row were unavailable , write empty data to output                       
+                Log To Console  ${item['hotel']} ; N/A , 0 records for date: ${date_from} - ${date_to} , PAX ${item['PAX']}
+                &{output_excel_row}=  Copy Dictionary  ${item}
+                Set To Dictionary  ${output_excel_row}  izba=N/A  CK=N/A  termin CK=N/A  cena za osobu=0  cena za zajezd=0  timestamp=${current_timestamp}
+                log  ${output_excel_row}
+                Append To List  ${output}  ${output_excel_row}
             END
         ELSE  #If we get empty result, to excel we put N/A values
-            Log To Console  ${item['url']} ; N/A , 0 records for date: ${date_from} - ${date_to} 
+            Log To Console  ${item['hotel']} ; N/A , 0 records for date: ${date_from} - ${date_to} , PAX ${item['PAX']}
             &{output_excel_row}=  Copy Dictionary  ${item}
             Set To Dictionary  ${output_excel_row}  izba=N/A  CK=N/A  termin CK=N/A  cena za osobu=0  cena za zajezd=0  timestamp=${current_timestamp}
             log  ${output_excel_row}
