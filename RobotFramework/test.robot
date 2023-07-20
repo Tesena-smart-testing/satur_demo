@@ -95,7 +95,8 @@ Get info
                 ...                          country_id=${dataItem['favouriteData']['offerData']['countryId'][0]}
                 ...                          locality_id=${dataItem['favouriteData']['offerData']['localityId'][0]}
                 ...                          referer=${item['url']}
-                ...                          length_days=${item['pocet noci']}                
+                ...                          length_days=${item['pocet noci']}       
+                ...                          children_age=${children_age}         
                 ${available}=  Set Variable  ${resp_json_availability['customData']['isAvailable']}
                 IF  ${available}
                     #output: izba, CK, termin CK, cena za osobu, cena za zajezd, datum

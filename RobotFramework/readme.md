@@ -148,5 +148,7 @@ You can use Jenkins for periodicaly run of this script. For each build you can a
 For install open URL: https://www.jenkins.io/download/
 Usually Jenkins runs on port 8080, you can choose other one.
 
+Create new Job (type: pipeline) and use Jenkinsfile from this repozitory as script for it
+
 
 

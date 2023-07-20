@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('GIT clone') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Tesena-smart-testing/satur_demo.git'
+            }
+        }
+        stage('Run script') {
+            steps {
+                bat 'cd RobotFramework && dir && robot .\\test.robot'
+            }
+        }
+        stage('Archive artefacts') {
+            steps {
+                archiveArtifacts artifacts: 'RobotFramework/output*.xlsx, RobotFramework/data*.json, RobotFramework/log.html', followSymlinks: false
+            }
+        }
+        stage('CleanWS') {
+            steps {
+                cleanWs notFailBuild: true
+            }
+        }
+    }
+}
