@@ -17,7 +17,7 @@ Suite Teardown  Delete All Sessions
 #MySQL configuration
 ${DBHOST}=  localhost
 ${DBUSER}=  root
-${DBPASS}=  Create1234+
+${DBPASS}=  Satur2023
 ${DBNAME}=  Satur
 
 
