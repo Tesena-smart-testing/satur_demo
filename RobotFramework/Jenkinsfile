@@ -4,7 +4,7 @@ pipeline {
         file 'INPUTFILE'
     }
     stages {                
-        stage {
+        stage('Echo') {
             steps {
                 bat 'echo %INPUTFILE%'
             }
