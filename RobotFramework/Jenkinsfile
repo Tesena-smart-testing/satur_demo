@@ -1,9 +1,19 @@
 pipeline {
     agent any
     parameters {
-        file 'INPUTFILE'
+        file(name: 'INPUTFILE', description: 'Select a file to process')
     }
-    stages {                
+    stages {                        
+        stage('Replace File') {
+            steps {
+                script {
+                    def selectedFile = params.INPUTFILE
+                    def workspace = pwd() // Získání cesty k workspace
+
+                    sh "cp ${selectedFile} ${workspace}/input2.xls"
+                }
+            }
+        }        
         stage('Echo') {
             steps {
                 bat 'echo %INPUTFILE%'
