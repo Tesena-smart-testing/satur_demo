@@ -1,6 +1,8 @@
 pipeline {
     agent any
-
+    parameters {
+        base64File 'INPUTFILE'
+    }
     stages {
         stage('GIT clone') {
             steps {
@@ -9,7 +11,7 @@ pipeline {
         }
         stage('Run script') {
             steps {
-                bat 'cd RobotFramework && dir && robot .\\test.robot'
+                bat 'dir && cd RobotFramework && dir && robot .\\test.robot'
             }
         }
         stage('Archive artefacts') {
