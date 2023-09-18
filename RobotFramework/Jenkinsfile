@@ -4,6 +4,11 @@ pipeline {
         base64File 'INPUTFILE'
     }
     stages {
+        stage('CleanWS') {
+            steps {
+                cleanWs notFailBuild: true
+            }
+        }
         stage('GIT clone') {
             steps {
                 git branch: 'main', url: 'https://github.com/Tesena-smart-testing/satur_demo.git'
@@ -18,11 +23,6 @@ pipeline {
             steps {
                 archiveArtifacts artifacts: 'RobotFramework/output*.xlsx, RobotFramework/data*.json, RobotFramework/log.html', followSymlinks: false
             }
-        }
-        stage('CleanWS') {
-            steps {
-                cleanWs notFailBuild: true
-            }
-        }
+        }        
     }
 }
