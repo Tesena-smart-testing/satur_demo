@@ -10,7 +10,8 @@ pipeline {
                     def selectedFile = params.INPUTFILE
                     def workspace = pwd() // Získání cesty k workspace
 
-                    sh "cp ${selectedFile} ${workspace}/input2.xls"
+                    //sh "cp ${selectedFile} ${workspace}/input2.xls"
+                    bat "copy /Y \"${selectedFile}\" \"${workspace}\\input2.xls\""
                 }
             }
         }        
