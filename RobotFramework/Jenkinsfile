@@ -11,8 +11,7 @@ pipeline {
         }
         stage('Get properties file from user and send to slave workspace') {
             steps {
-                    node('master') {
-                        script{
+                    script{
                                 // Get file using input step, will put it in build directory
                                 print "=================Please upload your property files ====================="
                                 def inputFile = input message: 'Upload file', parameters: [file(name: 'input.xls')]
@@ -20,9 +19,7 @@ pipeline {
                                 writeFile(file: 'input.xlsA', text: inputFile.readToString())
                                 // Stash it for use in a different part of the pipeline
                                 stash name: 'data', includes: 'input.xlsA'
-                        }
-                    }
-                    
+                    }                                        
             }
         }
         stage('GIT clone') {
