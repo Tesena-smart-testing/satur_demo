@@ -7,9 +7,9 @@ pipeline {
         stage('Replace File') {
             steps {
                 script {
-                    def selectedFile = params.INPUTFILE
+                    def selectedFile = parameters.INPUTFILE
                     def workspace = pwd() // Získání cesty k workspace
-
+                    echo "Selected file: ${selectedFile}"
                     //sh "cp ${selectedFile} ${workspace}/input2.xls"
                     bat "copy /Y \"${selectedFile}\" \"${workspace}\\input2.xls\""
                 }
