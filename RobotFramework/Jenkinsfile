@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-        base64File 'INPUTFILE'
+        file 'INPUTFILE'
     }
     stages {
         stage('CleanWS') {
