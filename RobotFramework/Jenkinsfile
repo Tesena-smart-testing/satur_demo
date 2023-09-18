@@ -3,23 +3,10 @@ pipeline {
     parameters {
         file 'INPUTFILE'
     }
-    stages {
-        stage('CleanWS') {
+    stages {                
+        stage {
             steps {
-                cleanWs notFailBuild: true
-            }
-        }
-        stage('Get properties file from user and send to slave workspace') {
-            steps {
-                    script{
-                                // Get file using input step, will put it in build directory
-                                print "=================Please upload your property files ====================="
-                                def inputFile = input message: 'Upload file', parameters: [file(name: 'input.xls')]
-                                // Read contents and write to workspace
-                                writeFile(file: 'input.xlsA', text: inputFile.readToString())
-                                // Stash it for use in a different part of the pipeline
-                                stash name: 'data', includes: 'input.xlsA'
-                    }                                        
+                bat 'echo %INPUTFILE%'
             }
         }
         stage('GIT clone') {
@@ -35,6 +22,11 @@ pipeline {
         stage('Archive artefacts') {
             steps {
                 archiveArtifacts artifacts: 'RobotFramework/output*.xlsx, RobotFramework/data*.json, RobotFramework/log.html', followSymlinks: false
+            }
+        }
+        stage('CleanWS') {
+            steps {
+                cleanWs notFailBuild: true
             }
         }        
     }
