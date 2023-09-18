@@ -9,6 +9,22 @@ pipeline {
                 cleanWs notFailBuild: true
             }
         }
+        stage('Get properties file from user and send to slave workspace') {
+            steps {
+                    node('master') {
+                        script{
+                                // Get file using input step, will put it in build directory
+                                print "=================Please upload your property files ====================="
+                                def inputFile = input message: 'Upload file', parameters: [file(name: 'input.xls')]
+                                // Read contents and write to workspace
+                                writeFile(file: 'input.xlsA', text: inputFile.readToString())
+                                // Stash it for use in a different part of the pipeline
+                                stash name: 'data', includes: 'input.xlsA'
+                        }
+                    }
+                    
+            }
+        }
         stage('GIT clone') {
             steps {
                 git branch: 'main', url: 'https://github.com/Tesena-smart-testing/satur_demo.git'
