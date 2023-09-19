@@ -1,25 +1,25 @@
 pipeline {
     agent any
     parameters {
-        file(name: 'INPUTFILE', description: 'Select a file to process')
+        string(name: 'FILE_PATH_PARAM', description: 'Enter the file input.xls path', defaultValue: 'C:\\_GIT\\satur\\input.xls')
     }
     stages {                        
-        stage('Replace File') {
+        stage('Copy File to Workspace') {
             steps {
                 script {
-                    def selectedFile = parameters.INPUTFILE
-                    def workspace = pwd() // Získání cesty k workspace
-                    echo "Selected file: ${selectedFile}"
-                    //sh "cp ${selectedFile} ${workspace}/input2.xls"
-                    bat "copy /Y \"${selectedFile}\" \"${workspace}\\input2.xls\""
+                    def filePath = params.FILE_PATH_PARAM
+
+                    // Kontrola, zda zadaná cesta k souboru existuje
+                    if (fileExists(filePath)) {
+                        echo "Copying file from ${filePath} to workspace..."
+                        // Kopírování souboru do workspace
+                        bat "copy \"${filePath}\" ."
+                    } else {
+                        error "Specified file path does not exist: ${filePath}"
+                    }
                 }
             }
         }        
-        stage('Echo') {
-            steps {
-                bat 'echo %INPUTFILE%'
-            }
-        }
         stage('GIT clone') {
             steps {
                 git branch: 'main', url: 'https://github.com/Tesena-smart-testing/satur_demo.git'
@@ -27,18 +27,19 @@ pipeline {
         }
         stage('Run script') {
             steps {
-                bat 'dir && cd RobotFramework && dir && robot .\\test.robot'
+                bat 'cd RobotFramework && dir && robot .\\test.robot'
             }
         }
         stage('Archive artefacts') {
             steps {
                 archiveArtifacts artifacts: 'RobotFramework/output*.xlsx, RobotFramework/data*.json, RobotFramework/log.html', followSymlinks: false
             }
+        }                
+    }
+    post {
+        always {
+            // Ujistíme se, že workspace je uklizen
+            cleanWs()
         }
-        stage('CleanWS') {
-            steps {
-                cleanWs notFailBuild: true
-            }
-        }        
     }
 }
