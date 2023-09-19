@@ -13,7 +13,7 @@ pipeline {
                     if (fileExists(filePath)) {
                         echo "Copying file from ${filePath} to workspace..."
                         // Kopírování souboru do workspace
-                        bat "copy \"${filePath}\" ."
+                        bat "copy \"${filePath}\" .\\RobotFramework\\input.xls"
                     } else {
                         error "Specified file path does not exist: ${filePath}"
                     }
