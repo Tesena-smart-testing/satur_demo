@@ -30,11 +30,25 @@ Call Invia API
     [Arguments]  ${start_from}  ${hotel_id}  ${duration_days}  ${meal}  ${transport}  ${adults}=2  ${children}=0  ${children_age}=${EMPTY}  ${end_to}=${EMPTY}  ${tour_operator}=foreign
     Update Session  Invia
     ${headers}=  Create Dictionary   Content-Type=text/plain;charset=UTF-8  
-    ...                              X-Invia-Api-Trace-Id=0043d2eb9e5072867bc3f539bafc65fd
-    ...                              x-invia-api-clientrequest-id=a4abe60a7b3e370f78199f027c6108b2
+    ...                              X-Invia-Api-Trace-Id=26594e77d234e1c470c8e58dd732b4fa
+    ...                              x-invia-api-clientrequest-id=8727f881aff1096cc7f99a3cff45f389
     ...                              Cookie="invia-user-uuid=58d5c02d-a830-4f6d-ad66-01406bb842e6"
     ...                              Sec-Ch-Ua="Not.A/Brand";v="8", "Chromium";v="114", "Google Chrome";v="114"
     ...                              User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36
+    
+    ${cookies}=  Create Dictionary  invia-user-uuid=58d5c02d-a830-4f6d-ad66-01406bb842e6
+    ...                             CookieConsent={stamp:%27Z0qR5nZ6Bj4pu9CWtvqJDA5JWpM4feHnv7NZ0HpjoD4kRFuEVnWNsg==%27%2Cnecessary:true%2Cpreferences:true%2Cstatistics:true%2Cmarketing:true%2Cmethod:%27explicit%27%2Cver:1%2Cutc:1685690486352%2Cregion:%27cz%27}
+    ...                             _dc_gtm_UA-8698717-3=1
+    ...                             _gcl_au=1.1.1407120007.1685690488
+    ...                             yottly-client-id=014c34a5-705c-46a8-a203-5d2deea012ba
+    ...                             _fbp=fb.1.1685690490979.1369832604
+    ...                             gtm-session-start-30=triggered
+    ...                             terms_opened=1
+    ...                             _uetvid=17ec1370011611ee8d680dc608ba4721
+    ...                             cto_bundle=I4cuAV92RzNYaWVXdUk4WnRjYjRWdXRUVlczbCUyQlpqTElUdzNqNTBzd3lURmNxa2x3UHp0clRuNE54JTJGMXJmVUxUeSUyRkttY1FlajBwbzZKR1IlMkJYaVRUdmtHOExtZTVkNE1QNDAwJTJCTkNkRCUyQjdrdEpxWFRyTlQlMkYyUU5LcWZJS2Z1STBGVThmUlo2SlRPZSUyRnF2VWl6N3FuczdTeEVnJTNEJTNE
+    ...                             _clck=o5u65i|2|fdd|0|1248
+    ...                             _clsk=16lwqyp|1689619064523|2|1|w.clarity.ms/collect
+    ...                             PHPSESSID=3ecabc08888483897644573483255f6f
     ${body}=  Catenate
     ...  {
     ...    "filter":
@@ -61,7 +75,7 @@ Call Invia API
     ...            "sort_ascent_by":"price"
     ...        }
     ...  }
-    ${resp}=  POST On Session  Invia  ${ENDPOINT}  data=${body}   headers=${headers}  
+    ${resp}=  POST On Session  Invia  ${ENDPOINT}  data=${body}   headers=${headers}  cookies=${cookies}
     Should Be Equal As Strings  ${resp.status_code}  200  Response: status:${resp.status_code} (expected: 200) : ${resp.json()}
 
     Pretty Print Json  ${resp.text}

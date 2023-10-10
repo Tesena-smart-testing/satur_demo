@@ -34,9 +34,11 @@ Get info
         log  ${item}
         ${hotel_id}  Get Hotel Id   ${item['url']}
         #prepare and counting some values 
+        ${pocet_dni} =   Evaluate  ${item['pocet noci']} + 1
         ${date_from_orig}  Replace String  ${item['termin satur']}  /  .   #change date format
         ${date_from}=  Add Time To Date  ${date_from_orig}  time=${item['terminovy posun']} days  date_format=%d.%m.%Y  result_format=%d.%m.%Y
-        ${date_to}=  Add Time To Date  ${date_from_orig}  time=${item['pocet noci']} days  date_format=%d.%m.%Y  result_format=%d.%m.%Y
+        ${date_to}=    Add Time To Date  ${date_from_orig}  time=${item['pocet noci']} days       date_format=%d.%m.%Y  result_format=%d.%m.%Y
+        ${date_to}=    Add Time To Date  ${date_to}         time=${item['terminovy posun']} days  date_format=%d.%m.%Y  result_format=%d.%m.%Y
         #${date_to}=  Add Time To Date  ${date_to}  time=1 days  date_format=%d.%m.%Y  result_format=%d.%m.%Y
         ${meal_id}=  Set Variable   ${MEAL['${item['strava']}']}                      
         ${transportation_id}=  Set Variable   ${TRANSPORTATION['${item['odlet']}']}        
@@ -54,12 +56,12 @@ Get info
             ${children_age} =  Set Variable  9,9
         ELSE 
             ${children_age} =  Set Variable  ${EMPTY}
-        END        
+        END                
         ${pocet_vysledku}=  Set Variable  ${item['max pocet vysledkov']}
         ${resp_json}=  Call Invia API     #call API with data from current row in excel
         ...                            start_from=${date_from}
         ...                            hotel_id=${hotel_id}  
-        ...                            duration_days=${item['pocet noci']}
+        ...                            duration_days=${pocet_dni}
         ...                            meal=${meal_id}
         ...                            transport=${transportation_id}
         ...                            adults=${adults}   
@@ -77,6 +79,7 @@ Get info
                 log  pricePerPerson: ${dataItem['pricePerPerson']}
                 log  meal: ${dataItem['meal']}
                 log  OfferID: ${dataItem['favouriteData']['offerData']['offerId']}
+                ${date_start_origin_Ymd}=  Convert Date  ${date_from}  result_format=%Y-%m-%d  date_format=%d.%m.%Y
                 @{dateStart}=  Split String   ${dataItem['favouriteData']['offerData']['dateStart']}  T   #format: 2023-09-13T00:00:00+02:00
                 @{dateEnd}=  Split String   ${dataItem['favouriteData']['offerData']['dateEnd']}  T                
                 ${resp_json_availability}=   Call Invia API Availability
@@ -95,19 +98,21 @@ Get info
                 ...                          country_id=${dataItem['favouriteData']['offerData']['countryId'][0]}
                 ...                          locality_id=${dataItem['favouriteData']['offerData']['localityId'][0]}
                 ...                          referer=${item['url']}
-                ...                          length_days=${item['pocet noci']}       
+                ...                          length_days=${pocet_dni}      
                 ...                          children_age=${children_age}         
                 ${available}=  Set Variable  ${resp_json_availability['customData']['isAvailable']}
                 IF  ${available}
-                    #output: izba, CK, termin CK, cena za osobu, cena za zajezd, datum
-                    Log To Console  ${item['hotel']} ; izba=${dataItem['roomType']} ; CK=${dataItem['tourOperatorNameForClient']} ; termin CK=${dataItem['outboundDate']}T${dataItem['outboundTimes']} - ${dataItem['returnDate']}T${dataItem['returnTimes']} ; priceGroup ${dataItem['priceGroup']} ; PAX ${item['PAX']}
-                    ${pocitadlo}=  Set Variable  ${pocitadlo} + 1
-                    &{output_excel_row}=  Copy Dictionary  ${item}  #we use origin excel row and we can add values from result (as output)
-                    Set To Dictionary  ${output_excel_row}  izba=${dataItem['roomType']}  CK=${dataItem['tourOperatorNameForClient']}  termin CK=${dataItem['outboundDate']}T${dataItem['outboundTimes']}  cena za osobu=${dataItem['pricePerPerson']}  cena za zajezd=${dataItem['priceGroup']}  timestamp=${current_timestamp}
-                    log  ${output_excel_row}
-                    Append To List  ${output}  ${output_excel_row}   #add output excel row to do final output array
-                    IF  ${pocitadlo} == ${pocet_vysledku}                        
-                        BREAK
+                    IF  "${date_start_origin_Ymd}" == "${dateStart}[0]"
+                        #output: izba, CK, termin CK, cena za osobu, cena za zajezd, datum
+                        Log To Console  ${item['hotel']} ; izba=${dataItem['roomType']} ; CK=${dataItem['tourOperatorNameForClient']} ; termin CK=${dataItem['outboundDate']}T${dataItem['outboundTimes']} - ${dataItem['returnDate']}T${dataItem['returnTimes']} ; priceGroup ${dataItem['priceGroup']} ; PAX ${item['PAX']}
+                        ${pocitadlo}=  Set Variable  ${pocitadlo} + 1
+                        &{output_excel_row}=  Copy Dictionary  ${item}  #we use origin excel row and we can add values from result (as output)
+                        Set To Dictionary  ${output_excel_row}  izba=${dataItem['roomType']}  CK=${dataItem['tourOperatorNameForClient']}  termin CK=${dataItem['outboundDate']}T${dataItem['outboundTimes']}  cena za osobu=${dataItem['pricePerPerson']}  cena za zajezd=${dataItem['priceGroup']}  timestamp=${current_timestamp}
+                        log  ${output_excel_row}
+                        Append To List  ${output}  ${output_excel_row}   #add output excel row to do final output array
+                        IF  ${pocitadlo} == ${pocet_vysledku}                        
+                            BREAK
+                        END
                     END
                 END                
             END
