@@ -2,7 +2,7 @@ pipeline {
     agent any
     parameters {
         string(name: 'FILE_PATH_PARAM', description: 'Enter the file input.xls path', defaultValue: 'C:\\_GIT\\satur\\input.xls')
-        string(name: 'ROBOT_PARAMS', description: 'Additional RF params (empty for nothing)', defaultValue: '')
+        string(name: 'ROBOT_PARAMS', description: 'Additional RF params (empty for nothing, or i.e: "--variable DBPASS:Create1234+" for define DBPASS variable)', defaultValue: '')
     }
     stages {                        
         stage('Copy File to Workspace') {
