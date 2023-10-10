@@ -27,11 +27,8 @@ pipeline {
             }
         }
         stage('Run script') {
-            steps {
-                script {
-                    def rfParam = params.ROBOT_PARAMS
-                }
-                bat "cd RobotFramework && dir && robot \"${rfParam}\" .\\test.robot"
+            steps {                
+                bat "cd RobotFramework && dir && robot \"${params.ROBOT_PARAMS}\" .\\test.robot"
             }
         }
         stage('Archive artefacts') {
