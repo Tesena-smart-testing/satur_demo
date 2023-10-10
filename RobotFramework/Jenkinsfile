@@ -28,7 +28,7 @@ pipeline {
         }
         stage('Run script') {
             steps {                
-                bat "cd RobotFramework && dir && robot \"${params.ROBOT_PARAMS}\" .\\test.robot"
+                bat "cd RobotFramework && dir && robot ${params.ROBOT_PARAMS} .\\test.robot"
             }
         }
         stage('Archive artefacts') {
